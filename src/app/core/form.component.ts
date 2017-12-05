@@ -1,10 +1,10 @@
 import {Component, Inject} from '@angular/core';
 import {Product} from '../model/product.model';
 import {Model} from '../model/repository.model';
-import {MODES, SHARED_STATE, SharedState} from './sharedState.model';
+import {SHARED_STATE, SharedState} from './sharedState.model';
 import {NgForm} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
-import {distinctUntilChanged, filter, map} from 'rxjs/operators';
+import {distinctUntilChanged} from 'rxjs/operators';
 
 @Component({
   selector: 'app-form',
@@ -20,17 +20,16 @@ export class FormComponent {
 
     this.stateEvents
       .pipe(
-        map(state =>  state.mode === MODES.EDIT ? state.id : -1),
-        distinctUntilChanged(),
-        filter(id => id !== 3)
+        distinctUntilChanged((firstState, secondState) =>
+          firstState.mode === secondState.mode && firstState.id === secondState.id
+        )
       )
-      .subscribe((id) => {
-      this.editing = id !== -1;
-      this.product = new Product();
-      if (id !== -1) {
-        Object.assign(this.product, this.model.getProduct(id));
-      }
-    });
+      .subscribe((update) => {
+        this.product = new Product();
+        if (update.id !== undefined) {
+          Object.assign(this.product, this.model.getProduct(update.id));
+        }
+      });
   }
 
   submitForm(form: NgForm) {
