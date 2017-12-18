@@ -1,17 +1,19 @@
-import {Component, Inject} from '@angular/core';
+import {Component} from '@angular/core';
 import {Model} from '../model/repository.model';
-import {MODES, SHARED_STATE, SharedState} from './sharedState.model';
 import {Product} from '../model/product.model';
-import {Observer} from 'rxjs/Observer';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-table',
   templateUrl: 'table.component.html'
 })
 export class TableComponent {
+  category: string = null;
 
-  constructor(private model: Model,
-              @Inject(SHARED_STATE) private observer: Observer<SharedState>) {
+  constructor(private model: Model, activateRoute: ActivatedRoute) {
+    activateRoute.queryParams.subscribe(params => {
+      this.category = params['category'] || null;
+    });
   }
 
   getProduct(key: number): Product {
@@ -19,19 +21,17 @@ export class TableComponent {
   }
 
   getProducts(): Product[] {
-    return this.model.getProducts();
+    return this.model.getProducts()
+      .filter(p => this.category == null || p.category === this.category);
+  }
+
+  get categories(): string[] {
+    return this.model.getProducts()
+      .map(p => p.category)
+      .filter((category, index, array) => array.indexOf(category) === index);
   }
 
   deleteProduct(key: number) {
     this.model.deleteProduct(key);
   }
-
-  editProduct(key: number) {
-    this.observer.next(new SharedState(MODES.EDIT, key));
-  }
-
-  createProduct() {
-    this.observer.next(new SharedState(MODES.CREATE));
-  }
-
 }

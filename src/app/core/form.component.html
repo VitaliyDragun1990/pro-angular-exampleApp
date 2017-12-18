@@ -1,32 +1,43 @@
 <div class="bg-primary p-a-1" [class.bg-warning]="editing">
   <h5>{{editing ? 'Edit' : 'Create'}} Product</h5>
-  Last Event: {{ stateEvents | async | formatState }}
+</div>
+<div *ngIf="editing" class="p-t-1">
+  <button class="btn btn-secondary"
+          [routerLink]="['/form', 'edit', model.getPreviousProductId(product.id)]">
+    <!--(click)="getPreviousProduct()">-->
+    Previous
+  </button>
+  <button class="btn btn-secondary"
+          [routerLink]="['/form', 'edit', model.getNextProductId(product.id)]">
+    <!--(click)="getNextProduct()">-->
+    Next
+  </button>
 </div>
 
-<form novalidate #form="ngForm" (ngSubmit)="submitForm(form)" (reset)="resetForm()">
+<!--<form novalidate #form="ngForm" (ngSubmit)="submitForm(form)" (reset)="resetForm()">-->
+<form novalidate #form="ngForm" (ngSubmit)="submitForm(form)">
 
   <div class="form-group">
     <label>Name</label>
     <input class="form-control" name="name"
-        [(ngModel)]="product.name" required  />
+           [(ngModel)]="product.name" required/>
   </div>
 
   <div class="form-group">
     <label>Category</label>
     <input class="form-control" name="category"
-           [(ngModel)]="product.category" required />
+           [(ngModel)]="product.category" required/>
   </div>
 
   <div class="form-group">
     <label>Price</label>
-    <input class="form-control" name="price"
-           [(ngModel)]="product.price"
-           required pattern="^([0-9]*[.])?[0-9]+$" />
+    <input type="number" class="form-control" name="price" [(ngModel)]="product.price"
+           required  pattern="^([1-9])+([.][0-9][1-9])?$"/>
   </div>
 
   <button type="submit" class="btn btn-primary"
-      [class.btn-warning]="editing" [disabled]="form.invalid">
+          [class.btn-warning]="editing" [disabled]="form.invalid">
     {{editing ? 'Save' : 'Create'}}
   </button>
-  <button type="reset" class="btn btn-secondary">Cancel</button>
+  <button type="button" class="btn btn-secondary" routerLink="/">Cancel</button>
 </form>
