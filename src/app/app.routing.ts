@@ -16,6 +16,7 @@ const routes: Routes = [
     path: 'form/:mode', component: FormComponent,
     canActivate: [TermsGuard]
   },
+  {path: 'table/:category', component: TableComponent},
   {path: 'table', component: TableComponent},
   {path: '**', component: NotFoundComponent}
 ];

@@ -2,13 +2,17 @@ import {Component} from '@angular/core';
 import {Model} from '../model/repository.model';
 import {Product} from '../model/product.model';
 import {ActivatedRoute} from '@angular/router';
+import {HighlightTrigger} from './table.animations';
+
 
 @Component({
   selector: 'app-table',
-  templateUrl: 'table.component.html'
+  templateUrl: 'table.component.html',
+   animations: [HighlightTrigger]
 })
 export class TableComponent {
   category: string = null;
+  highlightCategory = '';
 
   constructor(private model: Model, activateRoute: ActivatedRoute) {
     activateRoute.queryParams.subscribe(params => {
@@ -33,5 +37,10 @@ export class TableComponent {
 
   deleteProduct(key: number) {
     this.model.deleteProduct(key);
+  }
+
+  getRowState(category: string): string {
+    return this.highlightCategory === '' ? '' :
+      this.highlightCategory === category ? 'selected' : 'notselected';
   }
 }
