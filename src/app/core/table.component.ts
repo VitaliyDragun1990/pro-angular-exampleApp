@@ -3,12 +3,13 @@ import {Model} from '../model/repository.model';
 import {Product} from '../model/product.model';
 import {ActivatedRoute} from '@angular/router';
 import {HighlightTrigger} from './table.animations';
+import {AnimationEvent} from '@angular/animations';
 
 
 @Component({
   selector: 'app-table',
   templateUrl: 'table.component.html',
-   animations: [HighlightTrigger]
+  animations: [HighlightTrigger]
 })
 export class TableComponent {
   category: string = null;
@@ -42,5 +43,9 @@ export class TableComponent {
   getRowState(category: string): string {
     return this.highlightCategory === '' ? '' :
       this.highlightCategory === category ? 'selected' : 'notselected';
+  }
+
+  writeAnimationEvent(event: AnimationEvent, name: string, start: boolean) {
+    console.log(`Animation ${name} ${start ? 'start' : 'Done'} from: ${event.fromState}  to: ${event.toState} time: ${event.totalTime}`);
   }
 }
